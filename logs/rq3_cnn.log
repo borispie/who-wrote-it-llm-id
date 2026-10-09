@@ -1,0 +1,10 @@
+writing  cnn  seed1: target acc  cross 0.449  control 0.494   (cross on its own tasks 0.663)
+writing  cnn  seed2: target acc  cross 0.471  control 0.487   (cross on its own tasks 0.658)
+writing  cnn  seed3: target acc  cross 0.477  control 0.490   (cross on its own tasks 0.661)
+coding   cnn  seed1: target acc  cross 0.492  control 0.525   (cross on its own tasks 0.689)
+coding   cnn  seed2: target acc  cross 0.500  control 0.514   (cross on its own tasks 0.657)
+coding   cnn  seed3: target acc  cross 0.467  control 0.503   (cross on its own tasks 0.665)
+               seed  cross_target_acc  control_target_acc  cross_source_test_acc
+shift   model                                                                   
+coding  cnn     2.0             0.486               0.514                  0.670
+writing cnn     2.0             0.466               0.490                  0.661
