@@ -1,0 +1,6 @@
+writing  lstm seed1: target acc  cross 0.408  control 0.431   (cross on its own tasks 0.615)
+               seed  cross_target_acc  control_target_acc  cross_source_test_acc
+shift   model                                                                   
+coding  cnn     2.0             0.486               0.514                  0.670
+writing cnn     2.0             0.466               0.490                  0.661
+        lstm    1.0             0.408               0.431                  0.615

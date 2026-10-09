@@ -1,0 +1,7 @@
+llm_family,curly apostrophe (’),bullets written as '* ',bullets written as '- ',starts with Sure/Certainly/Absolutely/Of course,starts with Here's/Here is/Here are,starts with What a/What an
+GPT,0.2189,0.0,0.408,0.2662,0.0075,0.0
+Claude,0.0,0.0025,0.2463,0.0933,0.2488,0.0
+Gemini,0.0,0.1729,0.25,0.0025,0.0012,0.0
+Llama,0.0012,0.3532,0.005,0.0,0.2711,0.1505
+Qwen,0.0846,0.01,0.1654,0.1169,0.0286,0.0
+DeepSeek,0.0,0.0808,0.0224,0.0958,0.0448,0.0

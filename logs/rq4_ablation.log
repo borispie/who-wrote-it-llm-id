@@ -1,0 +1,21 @@
+seed1 no_format       CNN acc: test-time 0.350  retrained 0.484
+seed1 words_only      CNN acc: test-time 0.287  retrained 0.459
+seed1 structure_only  CNN acc: test-time 0.500  retrained 0.604
+seed1 opening_only    CNN acc: test-time 0.433  retrained 0.464
+seed1 middle_only     CNN acc: test-time 0.475  retrained 0.508
+seed2 no_format       CNN acc: test-time 0.277  retrained 0.499
+seed2 words_only      CNN acc: test-time 0.246  retrained 0.471
+seed2 structure_only  CNN acc: test-time 0.493  retrained 0.612
+seed2 opening_only    CNN acc: test-time 0.441  retrained 0.454
+seed2 middle_only     CNN acc: test-time 0.445  retrained 0.512
+seed3 no_format       CNN acc: test-time 0.348  retrained 0.460
+seed3 words_only      CNN acc: test-time 0.288  retrained 0.467
+seed3 structure_only  CNN acc: test-time 0.460  retrained 0.623
+seed3 opening_only    CNN acc: test-time 0.432  retrained 0.484
+seed3 middle_only     CNN acc: test-time 0.441  retrained 0.503
+TF-IDF+LR original        retrained acc 0.633
+TF-IDF+LR no_format       retrained acc 0.538
+TF-IDF+LR words_only      retrained acc 0.519
+TF-IDF+LR structure_only  retrained acc 0.583
+TF-IDF+LR opening_only    retrained acc 0.503
+TF-IDF+LR middle_only     retrained acc 0.516

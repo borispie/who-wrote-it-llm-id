@@ -1,0 +1,5 @@
+bias 0.00: input-only acc  LR 0.198  CNN 0.172  majority 0.169  (chance 0.167)
+bias 0.25: input-only acc  LR 0.226  CNN 0.241  majority 0.197  (chance 0.167)
+bias 0.50: input-only acc  LR 0.313  CNN 0.325  majority 0.233  (chance 0.167)
+bias 0.75: input-only acc  LR 0.451  CNN 0.464  majority 0.272  (chance 0.167)
+bias 1.00: input-only acc  LR 0.574  CNN 0.600  majority 0.303  (chance 0.167)

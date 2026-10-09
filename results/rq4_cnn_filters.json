@@ -1,0 +1,348 @@
+{
+ "seed": 1,
+ "test_accuracy": 0.6516393442622951,
+ "filters": {
+  "GPT": [
+   {
+    "filter": 98,
+    "width": 3,
+    "weight": 0.099,
+    "top_windows": [
+     [
+      "### step 2",
+      8
+     ],
+     [
+      "### opor ayam",
+      2
+     ],
+     [
+      "### day 2",
+      2
+     ]
+    ]
+   },
+   {
+    "filter": 8,
+    "width": 3,
+    "weight": 0.084,
+    "top_windows": [
+     [
+      "<nl> <nl> ###",
+      38
+     ],
+     [
+      "<cut> <nl> ###",
+      2
+     ]
+    ]
+   },
+   {
+    "filter": 215,
+    "width": 5,
+    "weight": 0.078,
+    "top_windows": [
+     [
+      "### step 1 : define",
+      3
+     ],
+     [
+      "### step 1 : identify",
+      2
+     ],
+     [
+      "### day 1 : arrival",
+      2
+     ]
+    ]
+   }
+  ],
+  "Claude": [
+   {
+    "filter": 182,
+    "width": 4,
+    "weight": 0.097,
+    "top_windows": [
+     [
+      "word \" idiot \"",
+      3
+     ],
+     [
+      "about \" smooth \"",
+      2
+     ],
+     [
+      "i don't feel comfortable",
+      1
+     ]
+    ]
+   },
+   {
+    "filter": 190,
+    "width": 4,
+    "weight": 0.086,
+    "top_windows": [
+     [
+      "here's why : <nl>",
+      10
+     ],
+     [
+      "dynamic programming : <nl>",
+      8
+     ],
+     [
+      "typically include : <nl>",
+      4
+     ]
+    ]
+   },
+   {
+    "filter": 171,
+    "width": 4,
+    "weight": 0.086,
+    "top_windows": [
+     [
+      "here's a list of",
+      29
+     ],
+     [
+      "here's a possible scenario",
+      2
+     ],
+     [
+      "here's a suggested correction",
+      1
+     ]
+    ]
+   }
+  ],
+  "Gemini": [
+   {
+    "filter": 129,
+    "width": 4,
+    "weight": 0.089,
+    "top_windows": [
+     [
+      "- <unk> \u00b0 f",
+      2
+     ],
+     [
+      "- <unk> night sky",
+      1
+     ],
+     [
+      "- <unk> don't directly",
+      1
+     ]
+    ]
+   },
+   {
+    "filter": 124,
+    "width": 4,
+    "weight": 0.074,
+    "top_windows": [
+     [
+      "** <nl> <nl> *",
+      38
+     ],
+     [
+      "** 2013 <nl> *",
+      1
+     ],
+     [
+      "8 ounces <nl> *",
+      1
+     ]
+    ]
+   },
+   {
+    "filter": 40,
+    "width": 3,
+    "weight": 0.069,
+    "top_windows": [
+     [
+      ". therefore ,",
+      27
+     ],
+     [
+      "make better decisions",
+      7
+     ],
+     [
+      "and therefore interact",
+      1
+     ]
+    ]
+   }
+  ],
+  "Llama": [
+   {
+    "filter": 217,
+    "width": 5,
+    "weight": 0.095,
+    "top_windows": [
+     [
+      "what a great question !",
+      18
+     ],
+     [
+      "what a fascinating question !",
+      10
+     ],
+     [
+      "what a great choice !",
+      6
+     ]
+    ]
+   },
+   {
+    "filter": 3,
+    "width": 3,
+    "weight": 0.085,
+    "top_windows": [
+     [
+      "here \u2019 s",
+      39
+     ],
+     [
+      "here is how",
+      1
+     ]
+    ]
+   },
+   {
+    "filter": 250,
+    "width": 5,
+    "weight": 0.08,
+    "top_windows": [
+     [
+      ": <nl> <nl> ** title",
+      8
+     ],
+     [
+      ": <nl> <nl> ** step",
+      5
+     ],
+     [
+      ": <nl> <nl> * 4",
+      4
+     ]
+    ]
+   }
+  ],
+  "Qwen": [
+   {
+    "filter": 293,
+    "width": 5,
+    "weight": 0.081,
+    "top_windows": [
+     [
+      "difference between ` < -",
+      2
+     ],
+     [
+      ". were there any issues",
+      2
+     ],
+     [
+      "your grandfather's pen . here",
+      1
+     ]
+    ]
+   },
+   {
+    "filter": 8,
+    "width": 3,
+    "weight": 0.071,
+    "top_windows": [
+     [
+      "<nl> <nl> ###",
+      38
+     ],
+     [
+      "<cut> <nl> ###",
+      2
+     ]
+    ]
+   },
+   {
+    "filter": 251,
+    "width": 5,
+    "weight": 0.07,
+    "top_windows": [
+     [
+      ". here \u2019 s a",
+      34
+     ],
+     [
+      "<nl> here \u2019 s a",
+      4
+     ],
+     [
+      "<nl> here \u2019 s how",
+      2
+     ]
+    ]
+   }
+  ],
+  "DeepSeek": [
+   {
+    "filter": 231,
+    "width": 5,
+    "weight": 0.088,
+    "top_windows": [
+     [
+      "step 1 : identify the",
+      5
+     ],
+     [
+      "step 1 : define the",
+      5
+     ],
+     [
+      "step 1 : estimate the",
+      4
+     ]
+    ]
+   },
+   {
+    "filter": 290,
+    "width": 5,
+    "weight": 0.083,
+    "top_windows": [
+     [
+      "improve your handwriting ! here",
+      2
+     ],
+     [
+      "includes dishes such as quenelles",
+      1
+     ],
+     [
+      "around them . here are",
+      1
+     ]
+    ]
+   },
+   {
+    "filter": 163,
+    "width": 4,
+    "weight": 0.076,
+    "top_windows": [
+     [
+      "step 1 : define",
+      8
+     ],
+     [
+      "step 3 : calculate",
+      4
+     ],
+     [
+      "here to help you",
+      3
+     ]
+    ]
+   }
+  ]
+ }
+}

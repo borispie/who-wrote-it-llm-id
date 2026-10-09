@@ -1,0 +1,8 @@
+__pycache__/
+*.pyc
+data/raw_alpacaeval/
+logs/*.done
+report/*.aux
+report/*.log
+report/*.out
+.DS_Store
