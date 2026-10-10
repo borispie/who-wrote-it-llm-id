@@ -13,7 +13,7 @@ trains a **CNN** and an **RNN (bidirectional LSTM)** in PyTorch to classify resp
 | RQ1 | Which LLM generated a response? | **Yes, well above chance.** CNN 63.0%, BiLSTM 59.6%, TF-IDF baseline 63.3%, majority vote of all models 67.6% (chance 16.7%). Claude and Llama are easiest; Qwen is hardest (confused with GPT and DeepSeek). |
 | RQ2 | Does the user's prompt help? | **No.** Prompt only = chance (16.7%), because every LLM answered the same prompts; prompt + response ≈ response only. A simulated *biased* collection lets prompts alone reach ~60%, so prompt-only accuracy is a good test for dataset bias. |
 | RQ3 (extra) | Do fingerprints carry over to unseen task types? | **Mostly.** Never seeing writing (or coding) costs only 2–3 points vs. a size-matched control, but writing and coding answers are harder to attribute in general (~47–51% vs ~66%). Claude and Llama stay recognizable; GPT loses its markdown clues on writing. |
-| RQ4 (extra) | What distinguishes the LLMs? | **Mostly structure.** With every word replaced by a placeholder, a CNN still gets 61.3%; with words only it gets 46.6%. Habits: GPT uses headers, bold and curly apostrophes; Claude opens with "Here's" and almost never uses bold; Llama opens with "What a great question!" and uses `*` bullets. |
+| RQ4 (extra) | What distinguishes the LLMs? | **Mostly structure.** With the words replaced by a placeholder, a CNN still gets 61.3%; with words only it gets 46.6%. Habits: GPT uses headers, bold and curly apostrophes; Claude often opens with "Here's" and almost never uses bold; Llama is the only one that opens with "What a …!" (e.g. "What a great question!") and uses `*` bullets. |
 
 ## Data
 
@@ -27,8 +27,8 @@ trains a **CNN** and an **RNN (bidirectional LSTM)** in PyTorch to classify resp
   `Meta-Llama-3-70B-Instruct`, `Qwen2-72B-Instruct`, `deepseek-llm-67b-chat`.
 * **Balanced by design:** every model answered the same 804 prompts (one prompt with an empty answer was dropped
   for all models), so there are 804 responses per family.
-* **Task types** (for RQ3): keyword rules plus a manual check of every coding/math prompt (38 labels fixed by
-  hand, listed in `src/build_dataset.py`): 549 QA/advice, 162 writing, 60 coding, 33 math.
+* **Task types** (for RQ3): keyword rules plus a manual check (38 labels fixed by hand: 30 false coding/math
+  labels and 8 prompts the rules missed, listed in `src/build_dataset.py`): 549 QA/advice, 162 writing, 60 coding, 33 math.
 * **Split by prompt** (70/15/15): all six answers to a prompt are in the same split.
 
 ## How to run
@@ -51,8 +51,15 @@ bash run_all.sh          # or run the steps below one by one
 | Figures + tables | `python src/make_figures.py` | `figures/`, `report/tables/` |
 
 Everything runs on a CPU. The full pipeline took about 4–5 hours on a 2-core machine with no GPU (one BiLSTM run takes
-about 40 minutes; one CNN run about 5). Set `LLMID_THREADS` to control the number of PyTorch threads. The CNN uses 3
-seeds everywhere; because of its cost, the BiLSTM uses 3 seeds for RQ1 and 1 seed for the other experiments.
+about 35–60 minutes; one CNN run about 4–9). Set `LLMID_THREADS` to control the number of PyTorch threads. The CNN uses 3
+seeds everywhere (the RQ2 bias test repeats its random sampling 5 times); because of its cost, the BiLSTM uses 3
+seeds for RQ1 and 1 seed for the other experiments.
+
+`rq1_rq2.py` and `rq3_cross_task.py` skip any run whose result file already exists, and the results are included
+in this repository. To retrain from scratch, delete `results/rq1_rq2/`, `results/rq3/` and `results/rq3_parts/`
+first.
+
+To rebuild the report: `cd report && pdflatex report.tex` (run it twice so the references are filled in).
 
 ## Repository layout
 

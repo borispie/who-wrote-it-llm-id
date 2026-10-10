@@ -11,6 +11,7 @@
 \usepackage{parskip}
 \usepackage{xcolor}
 \usepackage[hidelinks]{hyperref}
+\hypersetup{pdftitle={Who Wrote It? Identifying LLMs from Their Responses},pdfauthor={Siyi Luo}}
 \usepackage{enumitem}
 \setlist{itemsep=2pt,topsep=3pt}
 \setlength{\emergencystretch}{2em}
@@ -104,8 +105,8 @@ LLM formats its answer is part of its style.
 \textbf{Task types (needed for RQ3).} AlpacaEval does not say what kind of task each prompt is, so I labeled the
 prompts with simple keyword rules. For example, ``python'' or ``SQL'' means \emph{coding}, ``solve'' means
 \emph{math}, and ``poem'' or ``email'' means \emph{writing}; everything else is \emph{QA / advice}. Rules make
-mistakes (``Write a script for a YouTube video'' is writing, not coding), so I read all the coding and math prompts
-and fixed 38 labels by hand. The final counts are 549 QA / advice, 162 writing, 60 coding and 33 math prompts.
+mistakes (``Write a script for a YouTube video'' is writing, not coding), so I checked them by hand and fixed 38
+labels (30 wrong coding/math labels and 8 prompts the rules missed). The final counts are 549 QA / advice, 162 writing, 60 coding and 33 math prompts.
 
 \textbf{Train / validation / test split.} I split the data \textbf{by prompt}: 70\% of the prompts for training
 (562), 15\% for validation (120) and 15\% for testing (122). All six answers to one prompt always go to the same
@@ -117,8 +118,8 @@ part, so every test prompt is new to the classifier, just like in real use.
 marks. It also keeps formatting marks as their own tokens: a line break becomes \ttt{<nl>}, and markdown symbols
 like \ttt{**} and \ttt{\#} are kept. Words are lowercased. Answers are long (median \MedianWords{} words) and I
 only had a CPU, so I kept the \textbf{first 200 and last 50 tokens} of each answer. The vocabulary
-(\CnnVocab{} tokens) is built from the training answers only. For RQ2, the prompt (up to 64 tokens) is put in
-front of the answer.
+(\CnnVocab{} tokens) is built from the training answers only. For RQ2, the prompt (up to 64 tokens; 128 when it is the
+only input) goes in front of the answer, with a \ttt{<sep>} token in between.
 
 \textbf{The two classifiers.} Both start the same way: each token becomes a list of 128 numbers (an
 \emph{embedding}) that the model learns during training. Table~\ref{tab:models} lists all settings.
@@ -153,7 +154,7 @@ Time per epoch (1 CPU thread) & \CnnSecEpochLo--\CnnSecEpochHi{} seconds & \Lstm
 Loss, optimizer & \multicolumn{2}{l}{cross-entropy; AdamW \cite{adamw} (learning rate 0.001, weight decay 0.0001)} \\
 Batch size, epochs & \multicolumn{2}{l}{32; at most 15 epochs; gradient clipping at 1.0} \\
 Early stopping & \multicolumn{2}{l}{keep the best epoch (by validation macro-F1); stop after 3 epochs with no gain} \\
-Random seeds & \multicolumn{2}{l}{CNN: 3 everywhere. BiLSTM: 3 for RQ1, 1 for the other experiments} \\
+Random seeds & \multicolumn{2}{l}{CNN: 3 (RQ2 bias test: 5). BiLSTM: 3 for RQ1, 1 for the other experiments} \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -162,7 +163,7 @@ Random seeds & \multicolumn{2}{l}{CNN: 3 everywhere. BiLSTM: 3 for RQ1, 1 for th
 \emph{epoch}), I check the score on the validation set and keep the best version of the model. If the score does
 not improve for 3 epochs in a row, training stops early. The test set is used only once, at the end. Results
 change a little with the random seed, so I trained each CNN setting 3 times and report the average $\pm$
-standard deviation. The BiLSTM is about 5 times slower, so it got 3 seeds for RQ1 and 1 seed for the other
+standard deviation. The BiLSTM is about 5--6 times slower, so it got 3 seeds for RQ1 and 1 seed for the other
 experiments. Everything ran in PyTorch on a CPU with 2 cores and no GPU.
 
 \textbf{Baselines and metrics.} To know whether the neural classifiers are any good, I compare them with random
@@ -184,7 +185,7 @@ The CNN is about \RqOneGap{} points ahead of the BiLSTM, but their results over 
 \CnnMin--\CnnMax\%, BiLSTM \LstmMin--\LstmMax\%), so I cannot say the CNN is clearly better. The simple TF-IDF
 baseline (\LrAcc\%) does as well as the CNN. This suggests that most of the fingerprint is in \emph{which} words,
 short phrases and formatting marks appear. Word counts, or a CNN with short filters, can catch that easily. Reading
-the whole answer in order, like the BiLSTM does, does not add much here.
+the answer in order, like the BiLSTM does, does not add much here.
 
 \begin{table}[!htbp]
 \centering
@@ -218,8 +219,9 @@ style sits between GPT's and DeepSeek's.
 \textbf{Short answers are much harder.} For answers under 100 words, the CNN is right only \ShortCnnAcc\% of the
 time, compared with \LongCnnAcc\% for answers of 300 words or more. A short answer simply has fewer clues.
 
-\textbf{Two smaller findings.} The validation score stopped improving after about \CnnEpochs{} epochs for the CNN
-and \LstmEpochs{} for the BiLSTM. And a majority vote of all \EnsN{} trained classifiers (3 CNNs, 3 BiLSTMs and
+\textbf{Two smaller findings.} The best validation score came after about \CnnEpochs{} epochs for the CNN and
+\LstmEpochs{} for the BiLSTM (average of 3 seeds). All three BiLSTM runs and one CNN run hit the 15-epoch limit, but
+in each one the last epoch already scored below the best one, so the limit probably cost little. And a majority vote of all \EnsN{} trained classifiers (3 CNNs, 3 BiLSTMs and
 TF-IDF) gets \EnsAcc\%, a bit better than the best single run (\BestRunAcc\%), because the classifiers make
 partly different mistakes.
 
@@ -261,7 +263,8 @@ Koala collection was answered by Gemini). Now a prompt-only classifier gets \Bia
 \BiasOneCnn\% (CNN), even though the prompts say nothing about the LLM. That is far above the \BiasOneMaj\% you
 get by always guessing the most common LLM. It is detecting where the prompt came
 from, not who wrote the answer. With a fair collection it stays near guessing (\BiasZeroCnn--\BiasZeroLr\%). So a
-prompt-only test is a cheap way to check a dataset for this kind of bias.
+prompt-only test is a cheap way to check a dataset for this kind of bias. (I repeated this random sampling 5 times and
+report the average; here the CNN used patience 5 and TF-IDF used single words only.)
 
 \section{In-depth analysis}
 
@@ -281,7 +284,7 @@ the classifier that never saw the task is the real cost of the task being new.
 \centering
 \caption{RQ3 test accuracy (\%). \emph{Own tasks}: new prompts from the tasks the classifier trained on. The
 control and the classifier that never saw the task are tested on the same target-task answers. Drop = control
-minus never-saw-it, in points, with a 95\% range from resampling the test prompts. Seeds in brackets.}
+minus never-saw-it, in points, with a 95\% range from resampling the test prompts. Number of seeds in parentheses.}
 \label{tab:rq3}
 \small
 \begin{tabular}{llcccc}
@@ -303,8 +306,8 @@ control (about 49--51\%).
 
 \textbf{(ii) Are some LLMs easier to spot on a new task? Yes.} Claude and Llama stay the easiest. Without ever
 training on writing, the CNN still finds \RecallCrossWritingClaude\% of Claude's and \RecallCrossWritingLlama\%
-of Llama's writing answers. Their habits, like Claude's ``Here's\ldots'' and Llama's ``What a great question!''
-openings, show up in almost every kind of answer. GPT is the opposite: on writing, it is found only about
+of Llama's writing answers. Their habits, like Claude's ``Here's\ldots'' and Llama's ``What a\ldots!''
+openings, show up in every task type. GPT is the opposite: on writing, it is found only about
 \RecallCrossWritingGPT\% of the time, compared with \RecallCnnGPT\% on the whole test set. An email or a poem has
 no headers or bullet lists, so GPT loses its strongest clue.
 
@@ -324,21 +327,22 @@ LLM. The biggest differences are in \textbf{formatting}:
   \item Claude likes numbered lists (\ShareNumberedClaude\% of its answers).
   \item Llama and GPT write the longest answers, DeepSeek the shortest.
   \item Word variety (the share of different words in a 50-word window \cite{mattr}) is about the same for every
-        LLM, so it is a weak clue.
+        LLM (0.74--0.79), so it is a weak clue.
 \end{itemize}
 
 \begin{figure}[!htbp]
 \centering
 \includegraphics[width=0.98\linewidth]{fig_rq4_style.png}
 \caption{Style differences between the LLMs. Top row: \% of answers that use each kind of formatting at least once.
-Bottom row: averages.}
+Bottom row: averages. Here a word is a run of letters, so the word counts are a little lower than in Table~\ref{tab:data},
+which splits the text at spaces.}
 \label{fig:style}
 \end{figure}
 
 Some small habits work almost like a signature (Table~\ref{tab:markers}). GPT uses the curly apostrophe
-(\textquoteright) in \CurlyGpt\% of its answers, and only Qwen also does (\CurlyQwen\%). Llama writes bullets with
-\texttt{*} and is the only one that opens with ``What a great question!''. Claude and Llama often start with
-``Here's'', and GPT with ``Sure'' or ``Certainly''.
+(\textquoteright) in \CurlyGpt\% of its answers, and only Qwen also does it often (\CurlyQwen\%). Llama writes bullets with
+\texttt{*} and is the only one that opens with ``What a\ldots!'' (for example ``What a great question!''). Claude
+often starts with ``Here's'', Llama with ``Here is'' or ``Here are'', and GPT with ``Sure'' or ``Certainly''.
 
 \begin{table}[!htbp]
 \centering
@@ -379,15 +383,15 @@ What the CNN sees & \two{Normal CNN, tested}{on changed answers} & \two{New CNN,
 The full answer (nothing removed) & \AblOriginalTest & \AblOriginalRetrain \\
 No markdown and no line breaks & \AblNoFormatTest & \AblNoFormatRetrain \\
 Words only (no punctuation or formatting) & \AblWordsOnlyTest & \AblWordsOnlyRetrain \\
-Structure only (every word replaced by \ttt{<w>}) & \AblStructureOnlyTest & \AblStructureOnlyRetrain \\
+Structure only (words replaced by \ttt{<w>}) & \AblStructureOnlyTest & \AblStructureOnlyRetrain \\
 First 30 tokens only & \AblOpeningOnlyTest & \AblOpeningOnlyRetrain \\
 A middle piece only (tokens 50--150) & \AblMiddleOnlyTest & \AblMiddleOnlyRetrain \\
 \bottomrule
 \end{tabular}
 \end{table}
 
-\textbf{(i) What does the classifier use? Mostly the structure of the answer.} When every word is replaced by the
-same placeholder, so the CNN only sees punctuation, line breaks and markdown, a new CNN still gets
+\textbf{(i) What does the classifier use? Mostly the structure of the answer.} When the words are replaced by a
+placeholder, so the CNN mostly sees punctuation, line breaks and markdown, a new CNN still gets
 \AblStructureOnlyRetrain\%, close to the \AblOriginalRetrain\% for the full answer. With only the words, it gets
 \AblWordsOnlyRetrain\%.
 
@@ -413,7 +417,7 @@ under other labels, and their shared topic words point to the wrong LLM. The spl
 \RowSplitGap{} points.
 
 \textbf{3. Start with a simple baseline.} TF-IDF + logistic regression trained in seconds and was as good as my
-neural classifiers. The BiLSTM was about 5 times slower and a bit worse. With only about 3,400 training answers,
+neural classifiers. The BiLSTM was about 5--6 times slower and a bit worse. With only about 3,400 training answers,
 a deep model does not win automatically.
 
 \textbf{4. Preprocessing is a modeling choice.} I kept line breaks and markdown as tokens because I guessed that
@@ -421,7 +425,7 @@ formatting mattered, and RQ4 showed it is the strongest signal. The usual ``lowe
 step would have thrown much of it away.
 
 \textbf{5. Check labels made by rules.} My keyword rules put ``Write a script for a YouTube video'' under coding.
-Reading the coding and math prompts by hand found 38 wrong labels, and RQ3 depends on these labels.
+Checking the labels by hand found 38 mistakes, and RQ3 depends on these labels.
 
 \textbf{6. Plan around your computer, and report the spread.} I had no GPU, so I timed one epoch before planning
 anything. My first BiLSTM needed about 5 minutes per epoch, so I made it smaller and cut the answers to 250
@@ -445,7 +449,9 @@ depending on the random seed.
 \url{https://github.com/borispie/who-wrote-it-llm-id}. Run \ttt{pip install -r requirements.txt} and then
 \ttt{bash run\_all.sh} (about 4--5 hours on a 2-core CPU). The README explains each step.
 
+{\small
 \begin{thebibliography}{9}
+\setlength{\itemsep}{1pt}\setlength{\parskip}{0pt}
 \bibitem{alpacaeval} X. Li, T. Zhang, Y. Dubois, R. Taori, I. Gulrajani, C. Guestrin, P. Liang, T. B. Hashimoto.
   \emph{AlpacaEval: An Automatic Evaluator of Instruction-following Models.} GitHub repository
   \ttt{tatsu-lab/alpaca\_eval}, 2023.
@@ -455,5 +461,6 @@ depending on the random seed.
 \bibitem{mattr} M. A. Covington and J. D. McFall. Cutting the Gordian Knot: The Moving-Average Type-Token Ratio
   (MATTR). \emph{Journal of Quantitative Linguistics}, 17(2), 2010.
 \end{thebibliography}
+}
 
 \end{document}

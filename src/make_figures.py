@@ -90,7 +90,7 @@ def dataset_assets():
     rows = []
     for f in FAMILIES:
         w = df.loc[df["llm_family"] == f, "words"]
-        rows.append(f"{f} & \\texttt{{{names[f]}}} & {int((df['llm_family'] == f).sum())} & {int(w.median())} & "
+        rows.append(f"{f} & \\texttt{{{names[f]}}} & {int((df['llm_family'] == f).sum())} & {w.median():g} & "
                     f"{w.mean():.0f} \\\\")
     with open(f"{TAB}/dataset.tex", "w") as fh:
         fh.write("\n".join(rows))
