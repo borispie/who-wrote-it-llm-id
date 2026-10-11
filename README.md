@@ -99,7 +99,6 @@ Project_Report.pdf   the report
 ## AI use
 
 The course allows LLMs to help with understanding concepts, debugging, brainstorming experiments and interpreting
-results. I used Claude (Anthropic) as an assistant in this project. In the final check before submission, Claude
-compared the numbers in the report with the files in `results/`, corrected a few wording mistakes in the report and
-this README, and fixed `requirements.txt` and `run_all.sh` (commit "Fix report details and update README"). I am
-responsible for everything in this repository and can explain it.
+results. I used Claude (Anthropic) in this project. In the final check before submission, Claude compared the
+numbers in the report with the files in `results/` and corrected a few wording mistakes in the report and this
+README.
